@@ -1,16 +1,49 @@
-﻿namespace Memoria
+﻿using System.Diagnostics;
+
+namespace Memoria
 {
-    internal class Jogo
+    public delegate void TentativaHandler(int tentativas);
+    public delegate void GameOverHandler();
+
+    internal class Jogo(params PictureBox[] pictures)
     {
+        private List<Carta> cartas;
+        private List<PictureBox> pictures = [.. pictures];
+
         private Carta? primeira;
-        private Carta? segunda;        
-        private bool terminou = false;
+        private Carta? segunda;
 
-        public Jogo(params PictureBox[] pictures)
+        private Stopwatch cronometro = new Stopwatch();
+        private int tentativas;
+
+        public bool GameOver
         {
-            var cartas = FabricaCartas.Gera();
+            get
+            {
+                return cartas.Where(c => c.Habilitado).Count() == 0;
+            }
+        }
 
-            for (var i = 0; i < pictures.Length; i++)
+        public string TimePassed
+        {
+            get
+            {
+                var elapsed = cronometro.Elapsed;
+                return $"{elapsed.Hours:D2}:{elapsed.Minutes:D2}:{elapsed.Seconds:D2}";
+            }
+        }
+
+        public event TentativaHandler TentativaHandler;
+        public event GameOverHandler GameOverHandler;
+
+        public void New()
+        {
+            tentativas = 0;
+            OnTentativa(tentativas);
+
+            cartas = FabricaCartas.Gera();
+
+            for (var i = 0; i < pictures.Count; i++)
             {
                 var picture = pictures[i];
                 var carta = cartas[i];
@@ -19,6 +52,9 @@
                 picture.Image = Image.FromFile(carta.Face);
                 picture.Click += Prepare(carta);
             }
+
+            cronometro.Reset();
+            cronometro.Start();
         }
 
         private EventHandler Prepare(Carta carta)
@@ -55,14 +91,14 @@
                 primeira = carta;
                 return;
             }
-            
+
             if (carta == primeira)
-            { 
+            {
                 Reset();
                 return;
             }
 
-            segunda = carta;            
+            segunda = carta;
 
             if (Acertou())
             {
@@ -73,6 +109,15 @@
             {
                 primeira.Desvira();
                 segunda.Desvira();
+            }
+
+            tentativas++;
+            OnTentativa(tentativas);
+
+            if (GameOver)
+            {
+                cronometro.Stop();
+                OnGameOver();
             }
 
             Reset();
@@ -91,6 +136,24 @@
 
             return !string.IsNullOrEmpty(carta1) &&
                 carta1 == carta2;
+        }
+
+        private void OnTentativa(int tentativa)
+        {
+            var handler = TentativaHandler;
+            if (handler != null)
+            {
+                handler.Invoke(tentativa);
+            }
+        }
+
+        private void OnGameOver()
+        {
+            var handler = GameOverHandler;
+            if (handler != null)
+            {
+                handler.Invoke();
+            }
         }
     }
 }

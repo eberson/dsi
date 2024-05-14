@@ -17,17 +17,6 @@
         {
             get
             {
-                //if (mostrando)
-                //{
-                //    return Frente;
-                //}
-                //else
-                //{
-                //    return Verso;
-                //}
-
-                //o código abaixo é uma versão simplificada
-                // do de cima (conhecida com if ternario)
                 return mostrando ? Frente : Verso;
             }
         }

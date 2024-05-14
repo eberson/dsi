@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             picCard1 = new PictureBox();
             picCard2 = new PictureBox();
             picCard3 = new PictureBox();
@@ -45,6 +46,8 @@
             lblTentativas = new Label();
             lblTempo = new Label();
             label3 = new Label();
+            relogio = new System.Windows.Forms.Timer(components);
+            btnRestart = new Button();
             ((System.ComponentModel.ISupportInitialize)picCard1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picCard2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picCard3).BeginInit();
@@ -229,11 +232,29 @@
             label3.TabIndex = 16;
             label3.Text = "Jogo da Memória";
             // 
+            // relogio
+            // 
+            relogio.Enabled = true;
+            relogio.Interval = 1;
+            relogio.Tick += relogio_Tick;
+            // 
+            // btnRestart
+            // 
+            btnRestart.Location = new Point(481, 585);
+            btnRestart.Name = "btnRestart";
+            btnRestart.Size = new Size(150, 36);
+            btnRestart.TabIndex = 17;
+            btnRestart.Text = "Jogar Novamente";
+            btnRestart.UseVisualStyleBackColor = true;
+            btnRestart.Visible = false;
+            btnRestart.Click += btnRestart_Click;
+            // 
             // FrmHome
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(647, 646);
+            Controls.Add(btnRestart);
             Controls.Add(label3);
             Controls.Add(lblTempo);
             Controls.Add(lblTentativas);
@@ -288,5 +309,7 @@
         private Label lblTentativas;
         private Label lblTempo;
         private Label label3;
+        private System.Windows.Forms.Timer relogio;
+        private Button btnRestart;
     }
 }
