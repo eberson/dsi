@@ -3,7 +3,7 @@
     internal class Jogo
     {
         private Carta? primeira;
-        private Carta? segunda;
+        private Carta? segunda;        
         private bool terminou = false;
 
         public Jogo(params PictureBox[] pictures)
@@ -53,35 +53,29 @@
             if (primeira == null)
             {
                 primeira = carta;
+                return;
             }
-            else if (carta != primeira)
-            {
-                segunda = carta;
-
-                if (Acertou())
-                {
-                    primeira.Desabilita();
-                    segunda.Desabilita();
-                }
-                else
-                {
-                    if (primeira.Mostrando)
-                    {
-                        primeira.Vira();
-                    }
-
-                    if (segunda.Mostrando)
-                    {
-                        segunda.Vira();
-                    }
-                }
-
+            
+            if (carta == primeira)
+            { 
                 Reset();
+                return;
+            }
+
+            segunda = carta;            
+
+            if (Acertou())
+            {
+                primeira.Desabilita();
+                segunda.Desabilita();
             }
             else
             {
-                Reset();
+                primeira.Desvira();
+                segunda.Desvira();
             }
+
+            Reset();
         }
 
         private void Reset()

@@ -51,6 +51,14 @@
             }
         }
 
+        public void Desvira()
+        {
+            if (Habilitado && Mostrando)
+            {
+                Vira();
+            }
+        }
+
         public void Desabilita()
         {
             Habilitado = false;
